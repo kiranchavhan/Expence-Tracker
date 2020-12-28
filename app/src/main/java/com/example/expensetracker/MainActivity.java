@@ -2,6 +2,7 @@ package com.example.expensetracker;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -40,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
         ImageView debitButton=findViewById(R.id.imageView3);
         final String[] nameOfTransaction = new String[1];
         final String[] amount = new String[1];
+        //saved on this Time and date
+        String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+        myDataBaseHelper db=new myDataBaseHelper(MainActivity.this);
         //onclick
         creditButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +55,9 @@ public class MainActivity extends AppCompatActivity {
                 credit(Integer.parseInt(amount[0]));
                 value+=String.valueOf(total);
                 display(value,tx5);
+                db.addTransaction(currentTime,currentDate,nameOfTransaction[0],"+"+amount[0]);
+
+
             }
         });
         debitButton.setOnClickListener(new View.OnClickListener() {
@@ -61,11 +69,20 @@ public class MainActivity extends AppCompatActivity {
                 debit(Integer.parseInt(amount[0]));
                 value+=String.valueOf(total);
                 display(value,tx5);
+                db.addTransaction(currentTime,currentDate,nameOfTransaction[0],"-"+amount[0]);
             }
         });
-        //saved on this Time and date
-        String currentDate = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
-        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
+        ImageView viewTransaction=findViewById(R.id.viewTransaction);
+        viewTransaction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Intent intent=new Intent(MainActivity.this,allTransaction.class);
+//                startActivity(intent);
+                db.onUpgrade();
+
+            }
+        });
+
 
 
 
